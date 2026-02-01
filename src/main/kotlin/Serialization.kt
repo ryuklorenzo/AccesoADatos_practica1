@@ -1,5 +1,6 @@
 package ies.sequeros.dam.ad.orm
 
+import ies.sequeros.dam.ad.orm.application.serializers.BigDecimalSerializer
 import ies.sequeros.dam.ad.orm.application.serializers.UUIDSerializer
 import io.ktor.http.*
 import io.ktor.http.content.*
@@ -29,6 +30,7 @@ fun Application.configureSerialization() {
             serializersModule = SerializersModule {
 
                 contextual(UUIDSerializer)
+                contextual(BigDecimalSerializer)
 
             }
         }

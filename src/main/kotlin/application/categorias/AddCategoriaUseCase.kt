@@ -1,6 +1,6 @@
 package ies.sequeros.dam.ad.orm.application.categorias
 
-import AddCategoriaCommand
+import application.categorias.commands.AddCategoriaCommand
 
 import ies.sequeros.dam.ad.orm.application.categorias.dtos.CategoriaDto
 import ies.sequeros.dam.ad.orm.domain.Categoria
@@ -20,6 +20,9 @@ class AddCategoriaUseCase (private val repository: ICategoriaRepository) {
 
     //se crea la extension para facilitarlo, se podría poner en una factoria
     fun Categoria.Companion.fromComand(command: AddCategoriaCommand): Categoria {
-        return Categoria(UUID.randomUUID(),command.nombre,command.descripcion,command.activo)
+        return Categoria(UUID.randomUUID(),
+            command.nombre,
+            command.descripcion,
+            command.activo)
     }
 }

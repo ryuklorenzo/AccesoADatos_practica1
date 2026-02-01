@@ -1,9 +1,5 @@
 package ies.sequeros.dam.ad.orm.infraestructure.mappers;
 
-
-
-
-
 import ies.sequeros.dam.ad.orm.domain.Categoria;
 import ies.sequeros.dam.ad.orm.infraestructure.entities.CategoriaJPA;
 

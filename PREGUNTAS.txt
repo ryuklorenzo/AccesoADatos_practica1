@@ -1,0 +1,56 @@
+1. ¿Qué sucede cuando se carga una categoría con todos los productos en cuanto a rendimiento y memoria?
+Pues cargar una lista grande de categorías con sus productos puede saturar la memoria porque creas demasiados productos y categorías en memoria y ralentizas la respuesta.
+
+a. ¿Cuántas peticiones se realizan?
+Se realizan n+1 respuestas, 1 que es la categoria y n es el número de productos asociados a dicha categoria.
+
+b. ¿Esto es óptimo?
+No porque sobrecargas la red y base de datos cont antas peticiones
+
+c. ¿Existe alguna forma de hacer más optimizado el SQL sin usar Hibernate?
+Sí, se puede hacer una SQL nativa o JPQL que usa inner join o left join. De esta manera devuelves los datos combinados con un solo resulset.
+
+d. Si se hace esto último, ¿qué sucede con las funcionalidades de cada capa?
+Que acoplarías la capa de infraestructura con la de la logica del negocio. Si hiciéramos el join el mapper sería más complejo para poder reconstruir los objetos y pierde independencia de la base de datos que proporciona ORM
+
+2. ¿Qué ventajas tiene que las relaciones señal EARLY? ¿Y desventajas?
+VENTAJAS:
+Los datos relacionados se cargan con la entidad principal en la misma consulta.
+Se evita LazyInitializationException porque los datos ya están en memoria antes de cerrar la sesión del EntityManager.
+
+DESVENTAJAS:
+Traemos datos que a lo mejor no son necesarios y esto consume memoria y ancho de banda innecesariamente.
+Menor rendimiento si hay muchas relaciones anidadas.
+
+3. ¿Qué ventajas tiene que las relaciones señal LAZY? ¿Y desventajas?
+VENTAJAS:
+No cargas innecesariamente todas las relaciones, solo las que necesiten se cargan.
+La carga inicial es más rápida
+
+DESVENTAJAS:
+Que cuando cierras la conexión ya no puedes acceder a ellas aunque este puesto como lazy. Salta la excepción de LazyInitializationException
+Posible error de n+1 si iteras una lista de propiedad lazy en un bucle
+
+4. En los repositorios se repite mucho código similar¿es una buena práctica? Se te ocurre alguna forma de mejorarlo y utilizarlo en otros repositorios.
+No es buena práctica, si se repite en Icategoria y en Iproducto, se podría crear una interfaz genérica y una clase abstracta que tenga las operaciones básicas usando el entity manager y los repositorios solo heredarían esta clase base y añadirían metodos únicos.
+
+5. ¿Qué sucede si se envía un JSON mal formado?
+Has visto alguna tecnología de validación de JSON que se pueda aplicar para validar los mensajes.
+Si se envia un JSON mal formado lanza una excepción de SerializationException o BadRequestException. Para validar hay herramientas externas como pueden ser JAKARTA VALIDATION usando anotaciones o JSON SCHEMA usando un schema como ejemplo. O también con cualquier verificador Online antes de enviarlo.
+
+6. ¿Qué sucede si existe una categoría con el mismo nombre?
+Si no está restringido crearía un duplicado, si está restringido lanzaría una excepción de PSQLException y hibernate lo pondría como PersistenceException.
+
+¿Qué debería devolver el servidor?
+El server debería de devolver un 409 Conflict o un 400 Bad request.
+
+a. ¿Cómo solucionar el problema anterior?
+Asegurarnos que tenga un UNIQUE para evitar duplicados.
+En el caso de uso verificar que exista antes que nada.
+Capturar las excepciones de duplicidad y mappearla a la respuesta http correcta.
+
+7. Realizar un esquema de las diferentes capas y sus funciones, los elementos que contiene y las funciones de estos elementos.
+API : Tiene Ktor, rutas y pluggins --> Recibe peticiones HTTP, deserializa JSON (DTOs), inyecta dependencias, llamar a Casos de Uso y responde códigos HTTP.
+Aplicación: Casos de Uso, Dto's y mappers --> Dirige la lógica de negocio específica de la aplicación. Transforma entidades de dominio a DTOs. Hace de puente entre el API y el Dominio.
+Dominio: Entidades y Interfaces de Repositorio --> Contiene los datos y reglas de negocio puras. Esta parte no entiende de SQL ni HTTP.
+Infraestructura: Implementacion de los repositorios, EntidadesJPA, Hibernate, DriversSQL --> Traduce objetos de dominio a entidades de base de datos JPA. Gestiona conexiones y transacciones con PostgreSQL.

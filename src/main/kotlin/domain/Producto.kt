@@ -27,4 +27,6 @@ class Producto(
     override fun hashCode(): Int {
         return id?.hashCode() ?: 0
     }
+    companion object
+
 }

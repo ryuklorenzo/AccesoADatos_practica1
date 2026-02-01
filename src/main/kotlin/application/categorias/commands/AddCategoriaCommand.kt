@@ -1,4 +1,4 @@
-
+package application.categorias.commands
 
 import kotlinx.serialization.Serializable
 

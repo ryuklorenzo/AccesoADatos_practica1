@@ -7,12 +7,12 @@
 
     <persistence-unit name="UnidadPersistencia" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-
             <class>ies.sequeros.dam.ad.orm.infraestructure.entities.CategoriaJPA</class>
+            <class>ies.sequeros.dam.ad.orm.infraestructure.entities.ProductoJPA</class>
         <properties>
             <!-- Conexión a PostgreSQL -->
             <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/vegaburguer"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/tienda"/>
             <property name="jakarta.persistence.jdbc.user" value="administrador"/>
             <property name="jakarta.persistence.jdbc.password" value="administrador"/>
 
