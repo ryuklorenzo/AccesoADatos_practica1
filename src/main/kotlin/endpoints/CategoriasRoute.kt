@@ -24,7 +24,7 @@ fun Route.configureCategoriasRoutes() {
             call.respond(HttpStatusCode.Created, item)
         }
 
-        // Rutas con ID
+        //rutas con ID
         route("/{id}") {
             get {
                 val useCase by inject<GetCategoriaUseCase>()

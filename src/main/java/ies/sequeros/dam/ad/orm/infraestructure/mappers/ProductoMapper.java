@@ -10,7 +10,6 @@ public class ProductoMapper {
     public static Producto toProducto(ProductoJPA jpa) {
         if (jpa == null) return null;
 
-        // categoria de la entidad que esta relacionada
         java.util.UUID catId = (jpa.getCategoria() != null) ? jpa.getCategoria().getId() : null;
 
         return new Producto(

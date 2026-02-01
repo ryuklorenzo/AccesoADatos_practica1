@@ -39,7 +39,7 @@ public class JPAProductoRepository implements IProductoRepository {
         final EntityManager em = this.emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         try {
-            // Convertimos el dominio a entidad JPA
+            // dominio a entidad JPA
             ProductoJPA producto = ProductoMapper.toJpa(item);
 
             tx.begin();
@@ -87,9 +87,9 @@ public class JPAProductoRepository implements IProductoRepository {
         EntityTransaction tx = em.getTransaction();
         try {
             tx.begin();
-            // Primero convertimos a JPA para poder hacer el merge correctamente
+            //convertimos a JPA para poder hacer el merge correctamente
             ProductoJPA jpa = ProductoMapper.toJpa(item);
-            // Aseguramos que está en el contexto de persistencia antes de borrar
+            //aseguramos que está en el contexto de persistencia antes de borrar
             ProductoJPA elemento = em.merge(jpa);
             em.remove(elemento);
             tx.commit();
@@ -111,7 +111,6 @@ public class JPAProductoRepository implements IProductoRepository {
         EntityTransaction tx = em.getTransaction();
         try {
             tx.begin();
-            // Obtenemos una referencia (proxy) para borrar sin necesidad de hacer SELECT completo
             ProductoJPA ref = em.getReference(ProductoJPA.class, id);
             em.remove(ref);
             tx.commit();

@@ -63,23 +63,26 @@ public class JPACategoriaRepository implements ICategoriaRepository {
         final EntityManager em = this.emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         try {
-            final CategoriaJPA categoria = CategoriaMapper.toJpa(item);
             tx.begin();
-            em.merge(categoria);
+            CategoriaJPA categoriaExistente = em.find(CategoriaJPA.class, item.getId());
+
+            if (categoriaExistente != null) {
+                categoriaExistente.setNombre(item.getNombre());
+                categoriaExistente.setDescripcion(item.getDescripcion());
+                categoriaExistente.setActivo(item.getActivo());
+                em.merge(categoriaExistente);
+            }
+
             tx.commit();
         } catch (final RuntimeException ex) {
-
             if (tx.isActive()) {
                 tx.rollback();
             }
-
             throw ex;
         } finally {
-
             if (em != null && em.isOpen()) {
                 em.close();
             }
-
         }
     }
 
@@ -89,7 +92,6 @@ public class JPACategoriaRepository implements ICategoriaRepository {
         EntityTransaction tx = em.getTransaction();
         try {
             tx.begin();
-            //asegurar que está en el mismo contexto de persistencia
             final Categoria elemento = em.merge(item);
             em.remove(elemento);
             tx.commit();
@@ -112,7 +114,6 @@ public class JPACategoriaRepository implements ICategoriaRepository {
         EntityTransaction tx = em.getTransaction();
         try {
             tx.begin();
-            //solo se obtiene la referencia
             CategoriaJPA ref = em.getReference(CategoriaJPA.class, id);
             em.remove(ref);
             tx.commit();
@@ -127,11 +128,6 @@ public class JPACategoriaRepository implements ICategoriaRepository {
             }
         }
     }
-
-  /*  @Override
-    public @Nullable CategoriaWithProductoDto findByIdWithProductos(@Nullable UUID id) {
-
-    }*/
 
     @Override
     public @Nullable Categoria findById(@Nullable UUID id) {
@@ -153,10 +149,7 @@ public class JPACategoriaRepository implements ICategoriaRepository {
     public boolean existsById(@NotNull String id) {
         EntityManager em = emf.createEntityManager();
         try {
-
             return em.find(CategoriaJPA.class, id) != null;
-
-
         }  finally {
             if (em != null && em.isOpen()) {
                 em.close();
